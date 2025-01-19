@@ -1,0 +1,49 @@
+@import url("https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap");
+* {
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+  font-family: "Poppins", serif;
+}
+
+:root {
+  --background: #181818;
+  --text: #ecf0f1;
+  --primary: #27ae60;
+  --secondary: #9b59b6;
+  --success: #2ecc71;
+  --error: #e74c3c;
+  --neutral: #95a5a6;
+  --border: #444444;
+  --cardBg: #2c3e50;
+  --highlight: #f1c40f;
+  --selected: #d32f2f;
+  --skeleton: #7f8c8d;
+  --black: #000000;
+  --white: #ffffff;
+}
+
+/* Light Theme */
+[data-theme="light"] {
+  --background: #f7f7f7;
+  --text: #2c3e50;
+  --primary: #27ae60;
+  --secondary: #9b59b6;
+  --success: #2ecc71;
+  --error: #e74c3c;
+  --neutral: #bdc3c7;
+  --border: #e0e0e0;
+  --cardBg: #ffffff;
+  --highlight: #f1c40f;
+  --selected: #d32f2f;
+  --skeleton: #bdc3c7;
+  --black: #000000;
+  --white: #ffffff;
+}
+
+body {
+  margin: 0;
+  overflow: hidden;
+  height: 100vh;
+  background-color: var(--background);
+}

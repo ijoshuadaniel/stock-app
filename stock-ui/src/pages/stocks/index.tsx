@@ -1,33 +1,104 @@
+import axios from "axios";
+import { useContext, useEffect, useState } from "react";
+import { ShimmerText } from "shimmer-effects-react";
+import { ThemeContext } from "../../context/themeContext";
 import { rupees } from "../../utils/constants";
-import jsonData from "./data.json";
 import "./index.scss";
 
-const Stocks = () => {
+type Stock = {
+  symbol: string;
+  underlying: string;
+  lastPrice: number;
+  change: number;
+  perChange: number;
+  ltp: number;
+  pChange: number;
+};
+
+type JsonData = {
+  allstock: Stock[];
+  market: Record<
+    string,
+    { identifier: string; lastPrice: number; change: number }
+  >;
+  active: Stock[];
+  gainers: Stock[];
+  loosers: Stock[];
+};
+
+const Stocks: React.FC = () => {
+  const { theme } = useContext(ThemeContext);
   const optionsSymbol = ["NIFTY 50", "NIFTY BANK", "NIFTY AUTO", "NIFTY IT"];
+  const [jsonData, setJsonData] = useState<JsonData | null>(null);
+  const [loading, setLoading] = useState<boolean>(true);
 
-  const getName = (symbol: string) => {
-    const name = jsonData.allstock.find((stock) => stock.symbol == symbol);
-    if (name) {
-      if (name.underlying.length > 15) {
-        return name.underlying.slice(0, 15) + "...";
-      } else {
-        return name.underlying;
+  const getName = (symbol: string, stocks: Stock[] = []) => {
+    const stock = stocks.find((s) => s.symbol === symbol);
+    return stock
+      ? stock.underlying.length > 15
+        ? `${stock.underlying.slice(0, 15)}...`
+        : stock.underlying
+      : symbol;
+  };
+
+  const getData = async () => {
+    setTimeout(async () => {
+      try {
+        const response = await axios.get<JsonData>(
+          "http://192.168.1.82:3000/nse/stocks"
+        );
+        setJsonData(response.data);
+      } catch (error) {
+        console.error("Error fetching stock data:", error);
+      } finally {
+        setLoading(false);
       }
-    } else {
-      return symbol;
-    }
+    }, 5000);
   };
 
-  const getImage = async (symbol: string) => {
-    const url = ``;
-    const res = await fetch(url);
-    const result = await res.blob();
-    if (result.size > 0) {
-      return url;
-    } else {
-      return "";
-    }
+  useEffect(() => {
+    getData();
+  }, []);
+
+  const getArrayData = (key: string) => {
+    return jsonData
+      ? (jsonData[key as keyof JsonData] as Stock[]).slice(0, 4)
+      : [];
   };
+
+  if (loading) {
+    return (
+      <div className="stock">
+        <div className="stock-balance">
+          <p>Total Balance</p>
+          <ShimmerText mode={theme} line={1} width={20} />
+        </div>
+        <div className="stock-market">
+          {optionsSymbol.map((option, index) => (
+            <div className="stock-market_container" key={index}>
+              <ShimmerText mode={theme} line={2} width={50} />
+            </div>
+          ))}
+        </div>
+        {["active", "gainers", "loosers"].map((key) => (
+          <div className="stock-mostbought" key={key}>
+            <h2>
+              <ShimmerText mode={theme} line={1} width={30} />
+            </h2>
+            <div className="stock-mostbought_wrapper">
+              {Array(4)
+                .fill(null)
+                .map((_, index) => (
+                  <div className="stock-mostbought_container" key={index}>
+                    <ShimmerText mode={theme} line={3} width={50} />
+                  </div>
+                ))}
+            </div>
+          </div>
+        ))}
+      </div>
+    );
+  }
 
   return (
     <div className="stock">
@@ -36,9 +107,10 @@ const Stocks = () => {
         <h3>{rupees} 0.000</h3>
       </div>
       <div className="stock-market">
-        {optionsSymbol.map((option, i) => {
-          const options = jsonData.market[option];
-          const isPositive = options.change >= 0;
+        {optionsSymbol.map((option) => {
+          const marketData = jsonData?.market[option];
+          if (!marketData) return null;
+          const isPositive = marketData.change >= 0;
           return (
             <div
               className={`stock-market_container ${
@@ -46,14 +118,14 @@ const Stocks = () => {
                   ? "stock-market_container-borderPositive"
                   : "stock-market_container-borderNegative"
               }`}
-              key={i}
+              key={option}
             >
               <div className="stock-market_container_current">
-                <h3>{options.identifier}</h3>
+                <h3>{marketData.identifier}</h3>
                 <div className="stock-market_container_current-price">
                   <span>
                     {rupees}
-                    {options.lastPrice}
+                    {marketData.lastPrice}
                   </span>
                   <span
                     className={
@@ -62,7 +134,8 @@ const Stocks = () => {
                         : "stock-market_container_negative"
                     }
                   >
-                    {`(${isPositive ? "+" : ""}${options.change.toFixed(2)})`}
+                    ({isPositive ? "+" : ""}
+                    {marketData.change.toFixed(2)})
                   </span>
                 </div>
               </div>
@@ -70,51 +143,58 @@ const Stocks = () => {
           );
         })}
       </div>
-      <div className="stock-mostbought">
-        <h2>Most Brought on Stocks</h2>
-        <div className="stock-mostbought_wrapper">
-          {jsonData.active.slice(0, 4).map((activeStock, i) => {
-            const isPositive = activeStock.change >= 0;
-            const placeholder = activeStock.symbol.charAt(0).toUpperCase(); // Get the first letter
-
-            return (
-              <div
-                className="stock-mostbought_container"
-                key={activeStock.symbol}
-              >
-                <img
-                  src={`https://s3tv-symbol.dhan.co/symbols/${activeStock.symbol}.svg`}
-                  alt="stock image"
-                  onError={(e) => {
-                    e.target.style.display = "none"; // Hide image if it fails to load
-                    e.target.nextSibling.style.display = "flex"; // Show placeholder
-                  }}
-                />
-                <div className="stock-image-placeholder">{placeholder}</div>
-
-                <h1>{getName(activeStock.symbol)}</h1>
-                <p>
-                  <span>
-                    {rupees}
-                    {activeStock.lastPrice}
-                  </span>
-                  <span
-                    className={
-                      isPositive
-                        ? "stock-mostbought_container_positive"
-                        : "stock-mostbought_container_negative"
-                    }
-                  >
-                    {`(${isPositive ? "+" : ""}${activeStock.change.toFixed(
-                      2
-                    )})`}
-                  </span>
-                </p>
-              </div>
-            );
-          })}
+      {["active", "gainers", "loosers"].map((key) => (
+        <div className="stock-mostbought" key={key}>
+          <h2>
+            {key === "active"
+              ? "Most Bought Stocks"
+              : key === "gainers"
+              ? "Top Gainers"
+              : "Top Losers"}
+          </h2>
+          <div className="stock-mostbought_wrapper">
+            {getArrayData(key).map((stock: Stock) => {
+              stock.ltp = stock.ltp ? stock.ltp : stock.lastPrice;
+              stock.perChange = stock.perChange
+                ? stock.perChange
+                : stock.pChange;
+              const isPositive = stock.perChange >= 0;
+              const placeholder = stock.symbol.charAt(0).toUpperCase();
+              return (
+                <div className="stock-mostbought_container" key={stock.symbol}>
+                  <img
+                    src={`https://s3tv-symbol.dhan.co/symbols/${stock.symbol}.svg`}
+                    alt="stock image"
+                    onError={(e) => {
+                      const target = e.target as HTMLImageElement;
+                      target.style.display = "none";
+                      target.nextElementSibling?.classList.add("show");
+                    }}
+                  />
+                  <div className="stock-image-placeholder">{placeholder}</div>
+                  <h1>{getName(stock.symbol, jsonData?.allstock)}</h1>
+                  <p>
+                    <span>
+                      {rupees}
+                      {stock.ltp}
+                    </span>
+                    <span
+                      className={
+                        isPositive
+                          ? "stock-mostbought_container_positive"
+                          : "stock-mostbought_container_negative"
+                      }
+                    >
+                      ({isPositive ? "+" : ""}
+                      {stock.perChange.toFixed(2)})
+                    </span>
+                  </p>
+                </div>
+              );
+            })}
+          </div>
         </div>
-      </div>
+      ))}
     </div>
   );
 };

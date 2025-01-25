@@ -1,4 +1,26 @@
-const themes = {
+export interface themeProp {
+  background: string;
+  text: string;
+  primary: string;
+  secondary: string;
+  success: string;
+  error: string;
+  neutral: string;
+  border: string;
+  cardBg: string;
+  highlight: string;
+  selected: string;
+  skeleton: string;
+  black: string;
+  white: string;
+}
+
+export interface themes {
+  dark: themeProp;
+  light: themeProp;
+}
+
+const themes: themes = {
   light: {
     background: "#F7F7F7",
     text: "#2C3E50",
@@ -32,5 +54,5 @@ const themes = {
     white: "#FFFFFF",
   },
 };
-
+export type Theme = keyof typeof themes;
 export default themes;

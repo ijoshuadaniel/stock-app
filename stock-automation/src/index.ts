@@ -1,19 +1,20 @@
-import cors from "cors";
 import "dotenv/config";
 import express from "express";
 import mongoose from "mongoose";
-import NseRouter from "./routers/nseRouter";
+import getStockData from "./functions/getStockData";
+var cron = require("node-cron");
 
 const app = express();
 
-app.use(cors());
-app.use("/nse", NseRouter);
+cron.schedule("*/5 * * * * *", async () => {
+  await getStockData();
+});
 
 const connectDB = () => {
   mongoose.connect("mongodb://localhost:27017/stock");
 };
 
-app.listen(process.env.PORT, () => {
+app.listen(process.env.PORT, async () => {
   connectDB();
   console.info("✅ App Started on " + process.env.PORT);
 });

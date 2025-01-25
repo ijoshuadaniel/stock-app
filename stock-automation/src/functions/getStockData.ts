@@ -23,7 +23,7 @@ const getStockData = async () => {
     const marketSymbolsPromises = optionsSymbol.map(async (symbol: string) => {
       try {
         const response = await getNseData(optionsUrl + symbol, cookies.cookies);
-        if (response.status === "Success") {
+        if (response.status === 200) {
           stocks.market[symbol] = response.data.data[0];
         } else {
           console.log(`Failed to fetch data for ${symbol}`);
@@ -40,7 +40,7 @@ const getStockData = async () => {
             gainersLoosersUrl + symbol,
             cookies.cookies
           );
-          if (response.status === "Success") {
+          if (response.status === 200) {
             stocks[symbol] = response.data.allSec.data;
           } else {
             console.log(`Failed to fetch data for ${symbol}`);
@@ -57,7 +57,7 @@ const getStockData = async () => {
           mostActiveStocks,
           cookies.cookies
         );
-        if (activeStockResponse.status === "Success") {
+        if (activeStockResponse.status === 200) {
           stocks.active = activeStockResponse.data.data;
         } else {
           console.log("Error fetching data for Most Active Stocks");
@@ -70,7 +70,7 @@ const getStockData = async () => {
     const allStocksData = async () => {
       try {
         const allStockResponse = await getNseData(allstocks, cookies.cookies);
-        if (allStockResponse.status === "Success") {
+        if (allStockResponse.status === 200) {
           stocks.allstock = allStockResponse.data.data.UnderlyingList;
         } else {
           console.log("Error fetching data for Most Active Stocks");

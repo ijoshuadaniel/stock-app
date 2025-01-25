@@ -1,5 +1,5 @@
 export const rupees = "₹";
-export const baseUrl = "http://192.168.1.82:5173:3000";
+export const baseUrl = "http://192.168.1.82:3000";
 
 export const baseHeaders = {
   "Content-Type": "application/json",
@@ -12,4 +12,9 @@ export const baseHeaders = {
   Authorization: `Bearer YOUR_ACCESS_TOKEN_HERE`,
   "Referrer-Policy": "no-referrer",
   "Feature-Policy": "geolocation 'none'; microphone 'none';",
+};
+
+export const pages = {
+  stock: "Stock",
+  stockInfo: "StockInfo",
 };

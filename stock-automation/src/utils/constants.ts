@@ -14,7 +14,19 @@ export const mostActiveStocks =
 export const gainersLoosersUrl = "/api/live-analysis-variations?index=";
 export const equity = "/api/equity-stock?index=allcontracts";
 export const allstocks = "/api/underlying-information";
+export const autocomplete = "/api/search/autocomplete?q=";
 
+// const functions
+export const equityMetaInfo = (stock: string) =>
+  `/api/equity-meta-info?symbol=${stock}`;
+export const quoteEquityMetaInfo = (stock: string) =>
+  `/api/quote-equity?symbol=${stock}`;
+export const corpInfo = (stock: string) =>
+  `/api/top-corp-info?symbol=${stock}&market=equities`;
+export const chartInfoData = (stock: string) =>
+  `/api/chart-databyindex-dynamic?index=${stock}EQN&type=symbol`;
+
+// extra options
 export const optionsSymbol = [
   "NIFTY 50",
   "NIFTY BANK",
@@ -22,6 +34,7 @@ export const optionsSymbol = [
   "NIFTY IT",
 ];
 
+// headaers
 export const baseHeaders = {
   authority: "www.nseindia.com",
   referer: "https://www.nseindia.com/",

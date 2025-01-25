@@ -1,8 +1,9 @@
-import axios from "axios";
 import { useContext, useEffect, useState } from "react";
 import { ShimmerText } from "shimmer-effects-react";
+import { AppContext } from "../../context/AppContext";
 import { ThemeContext } from "../../context/themeContext";
-import { rupees } from "../../utils/constants";
+import request from "../../utils/axios";
+import { pages, rupees } from "../../utils/constants";
 import "./index.scss";
 
 type Stock = {
@@ -28,6 +29,7 @@ type JsonData = {
 
 const Stocks: React.FC = () => {
   const { theme } = useContext(ThemeContext);
+  const { toggleSearch, changePage, setPageInfo } = useContext(AppContext);
   const optionsSymbol = ["NIFTY 50", "NIFTY BANK", "NIFTY AUTO", "NIFTY IT"];
   const [jsonData, setJsonData] = useState<JsonData | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
@@ -42,18 +44,14 @@ const Stocks: React.FC = () => {
   };
 
   const getData = async () => {
-    setTimeout(async () => {
-      try {
-        const response = await axios.get<JsonData>(
-          "http://192.168.1.82:3000/nse/stocks"
-        );
-        setJsonData(response.data);
-      } catch (error) {
-        console.error("Error fetching stock data:", error);
-      } finally {
-        setLoading(false);
-      }
-    }, 5000);
+    try {
+      const response = await request.get("/nse/stocks");
+      setJsonData(response.data);
+    } catch (error) {
+      console.error("Error fetching stock data:", error);
+    } finally {
+      setLoading(false);
+    }
   };
 
   useEffect(() => {
@@ -64,6 +62,11 @@ const Stocks: React.FC = () => {
     return jsonData
       ? (jsonData[key as keyof JsonData] as Stock[]).slice(0, 4)
       : [];
+  };
+
+  const handleStockInfo = (value: string) => {
+    setPageInfo({ stock: value });
+    changePage(pages.stockInfo);
   };
 
   if (loading) {
@@ -161,7 +164,11 @@ const Stocks: React.FC = () => {
               const isPositive = stock.perChange >= 0;
               const placeholder = stock.symbol.charAt(0).toUpperCase();
               return (
-                <div className="stock-mostbought_container" key={stock.symbol}>
+                <div
+                  className="stock-mostbought_container"
+                  key={stock.symbol}
+                  onClick={() => handleStockInfo(stock.symbol)}
+                >
                   <img
                     src={`https://s3tv-symbol.dhan.co/symbols/${stock.symbol}.svg`}
                     alt="stock image"

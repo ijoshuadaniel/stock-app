@@ -1,13 +1,19 @@
 import { useContext, useEffect, useState } from "react";
 import { CiDark, CiLight, CiSearch } from "react-icons/ci";
 import "./app.scss";
+import AutoComplete from "./component/autoComplete";
 import BottomNavigation from "./component/bottomNavigation";
+import Modal from "./component/modal";
+import { AppContext } from "./context/AppContext";
 import { ThemeContext } from "./context/themeContext";
+import StockInfo from "./pages/info";
 import Stocks from "./pages/stocks";
+import { pages } from "./utils/constants";
 import themes from "./utils/themes";
 
 function App() {
   const { theme, toggleTheme } = useContext(ThemeContext);
+  const { showSearch, toggleSearch, page } = useContext(AppContext);
   const [windowHeight, setWindowHeight] = useState(window.innerHeight);
   const [headerHeight, setHeaderHeight] = useState(0);
   const [navigationHeight, setNavigationHeight] = useState(0);
@@ -41,12 +47,16 @@ function App() {
     }
   }, [theme]);
 
+  if (showSearch) {
+    return <Modal width="100vw" height="100vh" content={<AutoComplete />} />;
+  }
+
   return (
     <div className="app" style={{ height: `${windowHeight}px` }}>
       <div className="app-header" style={{ height: `${headerHeight}px` }}>
         <h1>Stocks</h1>
         <div className="app-header-icon">
-          <CiSearch />
+          <CiSearch onClick={() => toggleSearch()} />
           {theme === "dark" ? (
             <CiLight onClick={toggleTheme} />
           ) : (
@@ -55,7 +65,8 @@ function App() {
         </div>
       </div>
       <div className="app-content" style={{ height: `${contentHeight}px` }}>
-        <Stocks />
+        {pages.stock === page && <Stocks />}
+        {pages.stockInfo === page && <StockInfo />}
       </div>
       <div
         className="app-navigation"

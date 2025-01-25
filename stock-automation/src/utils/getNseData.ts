@@ -9,13 +9,15 @@ const getNseData = async (url, cookie) => {
     });
     if (response.status === 200) {
       return {
-        status: "Success",
+        status: response.status,
+        msg: "Success",
         done: true,
         data: response.data,
       };
     } else {
       return {
-        status: "Falied",
+        status: response.status,
+        msg: "Failed",
         done: false,
       };
     }

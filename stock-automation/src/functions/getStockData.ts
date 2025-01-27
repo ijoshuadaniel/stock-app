@@ -26,10 +26,10 @@ const getStockData = async () => {
         if (response.status === 200) {
           stocks.market[symbol] = response.data.data[0];
         } else {
-          console.log(`Failed to fetch data for ${symbol}`);
+          console.error(`Failed to fetch data for ${symbol}`);
         }
       } catch (error) {
-        console.log(`Error fetching data for ${symbol}:`, error);
+        console.error(`Error fetching data for ${symbol}:`, error);
       }
     });
 
@@ -45,10 +45,10 @@ const getStockData = async () => {
               (f) => f.series === "EQ"
             );
           } else {
-            console.log(`Failed to fetch data for ${symbol}`);
+            console.error(`Failed to fetch data for ${symbol}`);
           }
         } catch (error) {
-          console.log(`Error fetching data for ${symbol}:`, error);
+          console.error(`Error fetching data for ${symbol}:`, error);
         }
       }
     );
@@ -62,10 +62,10 @@ const getStockData = async () => {
         if (activeStockResponse.status === 200) {
           stocks.active = activeStockResponse.data.data;
         } else {
-          console.log("Error fetching data for Most Active Stocks");
+          console.error("Error fetching data for Most Active Stocks");
         }
       } catch (error) {
-        console.log("Error fetching data for Most Active Stocks:", error);
+        console.error("Error fetching data for Most Active Stocks:", error);
       }
     };
 
@@ -75,10 +75,10 @@ const getStockData = async () => {
         if (allStockResponse.status === 200) {
           stocks.allstock = allStockResponse.data.data.UnderlyingList;
         } else {
-          console.log("Error fetching data for Most Active Stocks");
+          console.error("Error fetching data for Most Active Stocks");
         }
       } catch (error) {
-        console.log("Error fetching data for Most Active Stocks:", error);
+        console.error("Error fetching data for Most Active Stocks:", error);
       }
     };
 

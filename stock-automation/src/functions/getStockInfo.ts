@@ -60,7 +60,7 @@ const getStockInfo = async (req: Request, res: Response) => {
         res.status(400).json({ status: 400, error: "An error occurred." });
       }
     } catch (error) {
-      console.log(error.message);
+      console.error(error.message);
       res.status(400).json({ status: 400, error: "An error occurred." });
     }
   } else {

@@ -5,7 +5,12 @@ interface AppContextType {
   showSearch: boolean;
   page: string;
   pageInfo: {
-    stock: string;
+    stock?: string;
+    headers: {
+      name: string;
+      showBackBtn: boolean;
+      pageToGo: string;
+    };
   };
   toggleSearch: () => void;
   changePage: (page: string) => void;
@@ -15,7 +20,14 @@ interface AppContextType {
 export const AppContext = createContext<AppContextType>({
   showSearch: false,
   page: pages.stock,
-  pageInfo: { stock: "" },
+  pageInfo: {
+    stock: "",
+    headers: {
+      name: "Stocks",
+      showBackBtn: false,
+      pageToGo: pages.stock,
+    },
+  },
   toggleSearch: () => {},
   changePage: () => {},
   setPageInfo: () => {},
@@ -24,7 +36,14 @@ export const AppContext = createContext<AppContextType>({
 export const AppProvider = ({ children }: { children: ReactNode }) => {
   const [showSearch, setShowSearch] = useState(false);
   const [page, setPage] = useState(pages.stock);
-  const [pageInfo, setPageInfo] = useState({ stock: "" });
+  const [pageInfo, setPageInfo] = useState({
+    stock: "",
+    headers: {
+      name: "Stocks",
+      showBackBtn: false,
+      pageToGo: pages.stock,
+    },
+  });
 
   const toggleSearch = () => {
     setShowSearch((prevState) => !prevState);

@@ -29,7 +29,7 @@ type JsonData = {
 
 const Stocks: React.FC = () => {
   const { theme } = useContext(ThemeContext);
-  const { toggleSearch, changePage, setPageInfo } = useContext(AppContext);
+  const { changePage, setPageInfo } = useContext(AppContext);
   const optionsSymbol = ["NIFTY 50", "NIFTY BANK", "NIFTY AUTO", "NIFTY IT"];
   const [jsonData, setJsonData] = useState<JsonData | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
@@ -65,7 +65,14 @@ const Stocks: React.FC = () => {
   };
 
   const handleStockInfo = (value: string) => {
-    setPageInfo({ stock: value });
+    setPageInfo({
+      stock: value,
+      headers: {
+        name: value,
+        showBackBtn: true,
+        pageToGo: pages.stock,
+      },
+    });
     changePage(pages.stockInfo);
   };
 

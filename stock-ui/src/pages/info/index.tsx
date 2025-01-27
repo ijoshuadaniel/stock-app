@@ -139,9 +139,15 @@ const StockInfo = (): JSX.Element => {
   }
 
   if (data) {
+    const lastData =
+      data.chartData.grapthData[data.chartData.grapthData.length - 1];
     const stockData = data.chartData.grapthData
-      .filter((f) => f[1] !== 9)
-      .slice(1000);
+      .filter((f) => f[1] !== 0)
+      .filter((f) => f[1] !== lastData[1])
+      .slice(-500);
+
+    stockData.push(lastData);
+
     const labels = stockData.map((graph) => String(graph[0]));
     const prices = stockData
       .map((graph) => String(graph[1]))

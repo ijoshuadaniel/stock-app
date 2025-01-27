@@ -1,5 +1,5 @@
 export const rupees = "₹";
-export const baseUrl = "http://192.168.1.82:3000";
+export const baseUrl = "http://192.168.1.93:3000";
 
 export const baseHeaders = {
   "Content-Type": "application/json",

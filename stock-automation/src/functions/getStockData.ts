@@ -41,7 +41,9 @@ const getStockData = async () => {
             cookies.cookies
           );
           if (response.status === 200) {
-            stocks[symbol] = response.data.allSec.data;
+            stocks[symbol] = response.data.allSec.data.filter(
+              (f) => f.series === "EQ"
+            );
           } else {
             console.log(`Failed to fetch data for ${symbol}`);
           }

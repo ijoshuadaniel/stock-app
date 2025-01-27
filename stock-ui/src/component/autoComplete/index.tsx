@@ -38,8 +38,6 @@ const AutoComplete = () => {
       setLoading(true);
       try {
         const response = await request.get(`/nse/autocomplete?stock=${key}`);
-        console.log(response.data);
-
         setAutocompleteData(response.data.data);
       } catch (error) {
         console.error("Error fetching stock data:", error);
@@ -53,11 +51,16 @@ const AutoComplete = () => {
     setSearch(value);
   };
 
-  console.log({ autocompleteData });
-
   const handleStockInfo = (value: string) => {
     toggleSearch();
-    setPageInfo({ stock: value });
+    setPageInfo({
+      stock: value,
+      headers: {
+        name: value,
+        showBackBtn: true,
+        pageToGo: pages.stock,
+      },
+    });
     changePage(pages.stockInfo);
   };
 

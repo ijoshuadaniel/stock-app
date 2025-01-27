@@ -33,14 +33,14 @@ const StockLineChart: React.FC<props> = ({ stockData, labels }) => {
         borderWidth: 1,
         fill: true,
         pointRadius: 0,
-        tension: 1,
+        tension: 0,
       },
     ],
   };
 
   const options = {
     responsive: true,
-    maintainAspectRatio: false,
+    maintainAspectRatio: true,
     scales: {
       x: {
         grid: { display: false },
@@ -48,7 +48,7 @@ const StockLineChart: React.FC<props> = ({ stockData, labels }) => {
       },
       y: {
         grid: { display: false },
-        ticks: { display: false },
+        ticks: { display: true },
       },
     },
     plugins: {
@@ -67,7 +67,7 @@ const StockLineChart: React.FC<props> = ({ stockData, labels }) => {
   };
 
   return (
-    <div style={{ height: "250px", width: "100%" }}>
+    <div style={{ height: "250px", width: "100%", marginBottom: "-3rem" }}>
       <Line data={data} options={options} />
     </div>
   );

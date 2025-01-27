@@ -10,7 +10,7 @@ const NseAxios = axios.create({
 
 NseAxios.interceptors.response.use(
   (response) => {
-    // console.log("Response Received:", {
+    // console.info("Response Received:", {
     //   url: response.config.url,
     //   status: response.status,
     //   data: response.data,

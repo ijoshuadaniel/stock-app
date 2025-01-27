@@ -1,7 +1,7 @@
 import "dotenv/config";
 import express from "express";
-import mongoose from "mongoose";
 import NseRouter from "./routers/nseRouter";
+import connectDB from "./utils/db";
 var cron = require("node-cron");
 
 const app = express();
@@ -12,12 +12,7 @@ const app = express();
 
 app.use("/v1/nse/", NseRouter);
 
-const connectDB = () => {
-  mongoose.connect("mongodb://localhost:27017/stock");
-  console.log("✅ Connected to MongoDb");
-};
-
 app.listen(process.env.PORT, async () => {
-  connectDB();
+  await connectDB();
   console.info("✅ App Started on " + process.env.PORT);
 });
